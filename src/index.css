@@ -1,0 +1,38 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --espresso:   #0a0604;
+  --dark-roast: #150d08;
+  --medium:     #2a1810;
+  --caramel:    #c8813a;
+  --latte:      #d4a06a;
+  --cream:      #f5ede0;
+  --border:     rgba(200,129,58,0.18);
+  --border-hi:  rgba(200,129,58,0.40);
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-serif:   'Cormorant Garamond', serif;
+  --font-body:    'DM Sans', sans-serif;
+}
+
+html { scroll-behavior: auto; font-size: 16px; }
+body {
+  background: var(--espresso);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+::selection { background: var(--caramel); color: var(--espresso); }
+a { text-decoration: none; color: inherit; }
+button { font-family: var(--font-body); cursor: none; border: none; background: none; }
+canvas { display: block; }
+
+#world-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+#page-content { position: relative; z-index: 1; }
