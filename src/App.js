@@ -8,6 +8,7 @@ import Menu        from './components/Menu';
 import Shop        from './components/Shop';
 import Testimonials from './components/Testimonials';
 import Footer      from './components/Footer';
+import Lenis       from 'lenis';
 
 /* ── Loading screen ── */
 function Loader() {
@@ -51,12 +52,41 @@ export default function App() {
   const scrollProgress = useRef(0);
 
   useEffect(() => {
+    // Initialize Lenis
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      infinite: false,
+    });
+
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       scrollProgress.current = max > 0 ? window.scrollY / max : 0;
     };
+    
+    // Listen to lenis scroll
+    lenis.on('scroll', onScroll);
+    
+    // Add default scroll event as backup for browser edge cases
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    
+    // Setup RAF for Lenis
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      lenis.destroy();
+    };
   }, []);
 
   return (
