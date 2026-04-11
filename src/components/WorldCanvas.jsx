@@ -1,9 +1,12 @@
 import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
-import { Float, Sparkles, Environment, Stars } from '@react-three/drei';
+import { Float, Sparkles, Environment, Stars, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { TextureLoader } from 'three';
 import coffeeCupImg from '../assets/coffee.jpeg';
+
+// Preload the heavy cup texture so it starts downloading immediately
+useTexture.preload(coffeeCupImg);
 
 /* ─────────────────────────────────────────────
    COFFEE CUP — rendered from the uploaded image
@@ -374,7 +377,10 @@ function WorldScene({ scrollProgress }) {
       <Stars radius={60} depth={30} count={800} factor={2}
         saturation={0.2} fade speed={0.4} />
 
-      <Environment preset="sunset" />
+      {/* Wrapping Environment in Suspense prevents it from blocking the hero load */}
+      <Suspense fallback={null}>
+        <Environment preset="sunset" />
+      </Suspense>
     </>
   );
 }
@@ -387,9 +393,9 @@ export default function WorldCanvas({ scrollProgress }) {
     <div id="world-canvas">
       <Canvas
         camera={{ position: [0, 0, 5.2], fov: 42 }}
-        dpr={[1, 2]}
+        dpr={[1, 1.5]} /* Reduced from 2 to 1.5 to massive fix scroll lag */
         style={{ width: '100%', height: '100%' }}
-        gl={{ antialias: true, alpha: true }}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         shadows
       >
         <Suspense fallback={null}>
